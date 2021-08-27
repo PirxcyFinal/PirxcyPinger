@@ -1,6 +1,6 @@
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2020
+Copyright Pirxcy 2020
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -17,57 +17,34 @@ of the Software. Any license notice or attribution required by
 the License must also include this Commons Clause License
 Condition notice.
 
-Software: BenBotAsync
+Software: PirxcyPinger
 License: Apache 2.0
 """
 
-"""
-Credit Oli, Terbau and GummyBear
-"""
+import aiohttp, asyncio
 
-from typing import Tuple, Union, Any
-
-from .enums import *
-from .cosmetics import BRCosmetic
-from .exceptions import InvalidParameters, NotFound
-
-import aiohttp
-import base64
-import codecs
-import fortnitepy
-import traceback
-import functools
-import asyncio
-import json
-
-__name__ = 'GummyFNAsync'
-__version__ = '1.0.0'
-__author__ = 'Pirxcy'
-
-GUMMYFN_BASE = 'https://api.gummyfn.com'
-
-#Overall Credits To Oli For Original Code For BenbotAsync
-#Original Link: https://github.com/xMistt/BenBotAsync
-
-
-
-# Credit to Terbau for this function.
-async def json_or_text(response: aiohttp.ClientResponse) -> Union[str, dict]:
-    text = await response.text(encoding='utf-8')
-    if 'application/json' in response.headers.get('content-type', ''):
-        return json.loads(text)
-    return text
-
-
-async def get_cosmetic(**params: Any):
+async def post(url):
+  async with aiohttp.ClientSession() as session:
+    async with session.request(
+      method='POST', 
+      url='https://pinger.pirxcy.xyz/api/add',
+      json=({'url': url})
+    ) as r:
+      if "http" not in url:
+        print("[PirxcyPinger] Invalid URL")
+      elif "https" not in url:
+        print("[PirxcyPinger] Invalid URL")        
+      elif r.status == 500:
+        print("[PirxcyPinger] Ping Response: URL Already Uploaded!")
+      elif r.status == 200:
+        print(f"[PirxcyPinger] Uploaded {url}")        
+  
+  while True:
     async with aiohttp.ClientSession() as session:
-        async with session.request(method='GET', url=f'{GUMMYFN_BASE}/cosmetic', params=params) as r:
-            data = await json_or_text(r)
-
-            if 'missing name and id parameter' in str(data):
-                raise InvalidParameters('Please Use Valid Parameters')
-
-            if 'Could not find any cosmetic matching parameters' in str(data):
-                raise NotFound('Could not find any cosmetic matching parameters.')
-
-            return BRCosmetic(data)
+      async with session.request(
+        method='GET', 
+        url='https://pinger.pirxcy.xyz/'
+      ) as r:
+        print(f"[PirxcyPinger] Pinged PirxcyPinger")
+        await asyncio.sleep(300)
+  return
