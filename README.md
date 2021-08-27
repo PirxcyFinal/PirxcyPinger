@@ -37,7 +37,7 @@ import os
 import sanic
 
 app = sanic.Sanic("PirxcyPinger")
-url = f"https://{os.environ['REPL_ID']}1.id.repl.co"
+url = f"https://{os.environ['REPL_ID']}.id.repl.co"
 
 async def upload():
   await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
