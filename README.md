@@ -1,61 +1,52 @@
-# GummyFNAsync
-Python wrapper for the GummyFn API.
+# PirxcyPinger
+Use This To Upload Files To PirxcyPinger
 
-[![Downloads](https://pepy.tech/badge/GummyFNAsync)](https://pepy.tech/project/GummyFNAsync)
-[![Requires: Python 3.x](https://img.shields.io/pypi/pyversions/GummyFNAsync.svg)](https://pypi.org/project/GummyFNAsync/)
-[![Version: 1.0.0](https://img.shields.io/pypi/v/GummyFNAsync.svg)](https://pypi.org/project/GummyFNAsync/)
+[![Downloads](https://pepy.tech/badge/PirxcyPinger)](https://pepy.tech/project/PirxcyPinger)
+[![Requires: Python 3.x](https://img.shields.io/pypi/pyversions/PirxcyPinger.svg)](https://pypi.org/project/PirxcyPinger/)
+[![Version: 1.0.0](https://img.shields.io/pypi/v/PirxcyPinger.svg)](https://pypi.org/project/PirxcyPinger/)
 
 ### Setup:
 Windows: ``py -3 -m pip install GummyFNAsync``<br>
 Linux/macOS: ``python3 -m pip install GummyFNAsync``
 
 ## Examples:
-```
-import GummyFNAsync
+```python
+import PirxcyPinger
+import os
 import asyncio
 
-async def skinsearch():
-    result = await GummyFNAsync.get_cosmetic(
-        name="Ghoul Trooper"
-    )
-
-    print(result.id)
+async def upload():
+  await PirxcyPinger.post(f"https://{os.environ['REPL_ID'].id.repl.co")
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(skinsearch())
+loop.run_until_complete(upload())
 loop.close()
 ```
 
 This would output:<br>
-```CID_029_Athena_Commando_F_Halloween```
-
-fortnitepy example:
 ```
-import GummyFNAsync
+[PirxcyPinger] Uploaded {id}.id.repl.co
+[PirxcyPinger] Pinged PirxcyPinger
+```
 
-import fortnitepy
-from fortnitepy.ext import commands
+discord.py example:
+```python
+import PirxcyPinger
+import os
+import discord
+from discord.ext import commands
 
-client = commands.Bot(
-    command_prefix=prefix
-    auth=fortnitepy.AuthorizationCodeAuth(
-        code = input('Enter Code\n')
-    )
+bot = commands.Bot(command_prefix='>')
+url = f"https://{os.environ['REPL_ID']}1.id.repl.co"
 
-@client.command()
-async def skin(ctx, *, item = None):
-    if item is None:
-        await ctx.send('No Item Was Given Try !skin ikonik')
-    else:
-        try:
-            skin = await GummyFNAsync.get_cosmetic(
-                name=content
-            )
-            await client.party.me.set_outfit(asset=skin.id)
-            await ctx.send(f'Skin Set To {skin.name}')
-        except GummyFNAsync.exceptions.NotFound:
-            await ctx.send(f'Could not find a skin named: {skin}')
 
-            
-client.run()
+@bot.event
+async def on_ready():
+  await PirxcyPinger.post(url)
+
+@bot.command()
+async def ping(ctx):
+  await ctx.send('pong')
+
+bot.run('token')
 ```
