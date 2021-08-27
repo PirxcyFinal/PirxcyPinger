@@ -4,13 +4,13 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
     
 setuptools.setup(
-    name="GummyFNAsync",
+    name="PirxcyPinger",
     version="0.0.1",
     author="Pirxcy",
-    description="Async Api wrapper for GummyFN",
+    description="Async Tool For Uploading URL's To PirxcyPinger",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://api.gummyfn.com",
+    url="https://pinger.pirxcy.xyz",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -18,7 +18,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-          'aiohttp',
-          'fortnitepy',
+          'aiohttp'
       ],
 )
