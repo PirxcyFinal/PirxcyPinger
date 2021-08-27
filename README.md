@@ -6,8 +6,7 @@ Use This To Upload Files To PirxcyPinger
 [![Version: 1.0.0](https://img.shields.io/pypi/v/PirxcyPinger.svg)](https://pypi.org/project/PirxcyPinger/)
 
 ### Setup:
-Windows: ``py -3 -m pip install GummyFNAsync``<br>
-Linux/macOS: ``python3 -m pip install GummyFNAsync``
+``pip3 install PirxcyPinger``
 
 ## Examples:
 ```python
