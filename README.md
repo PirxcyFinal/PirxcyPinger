@@ -16,7 +16,7 @@ import os
 import asyncio
 
 async def upload():
-  await PirxcyPinger.post(f"https://{os.environ['REPL_ID'].id.repl.co")
+  await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(upload())
@@ -32,15 +32,20 @@ This would output:<br>
 sanic example:
 ```python
 import PirxcyPinger
+import asyncio
 import os
 import sanic
 
 app = sanic.Sanic("PirxcyPinger")
 url = f"https://{os.environ['REPL_ID']}1.id.repl.co"
 
+async def upload():
+  await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+
 @app.route('/')
 async def index(request):
-  await PirxcyPinger.post(url)
+  asyncio.get_event_loop().create_task(upload())
+  return sanic.response.text("Pinging...")
 
 app.run(host="0.0.0.0", port=80)
 ```
@@ -53,7 +58,7 @@ import discord
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='>')
-url = f"https://{os.environ['REPL_ID']}1.id.repl.co"
+url = f"https://{os.environ['REPL_ID']}.id.repl.co"
 
 
 @bot.event
