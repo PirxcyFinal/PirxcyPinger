@@ -29,6 +29,22 @@ This would output:<br>
 [PirxcyPinger] Pinged PirxcyPinger
 ```
 
+sanic example:
+```python
+import PirxcyPinger
+import os
+import sanic
+
+app = sanic.Sanic("PirxcyPinger")
+url = f"https://{os.environ['REPL_ID']}1.id.repl.co"
+
+@app.route('/')
+async def index(request):
+  await PirxcyPinger.post(url)
+
+app.run(host="0.0.0.0", port=80)
+```
+
 discord.py example:
 ```python
 import PirxcyPinger
