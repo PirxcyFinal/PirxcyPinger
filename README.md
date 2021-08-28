@@ -39,7 +39,7 @@ app = sanic.Sanic("PirxcyPinger")
 url = f"https://{os.environ['REPL_ID']}.id.repl.co"
 
 async def upload():
-  await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+  await PirxcyPinger.post(url)
 
 @app.route('/')
 async def index(request):
