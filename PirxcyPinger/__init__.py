@@ -1,7 +1,6 @@
 """
 “Commons Clause” License Condition v1.0
 Copyright Pirxcy 2020
-
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
 Without limiting other conditions in the License, the grant
@@ -16,7 +15,6 @@ value derives, entirely or substantially, from the functionality
 of the Software. Any license notice or attribution required by
 the License must also include this Commons Clause License
 Condition notice.
-
 Software: PirxcyPinger
 License: Apache 2.0
 """
@@ -48,3 +46,29 @@ async def post(url):
         print(f"[PirxcyPinger] Pinged PirxcyPinger")
         await asyncio.sleep(300)
   return
+
+async def remove(url):
+  async with aiohttp.ClientSession() as session:
+    async with session.request(
+      method='POST', 
+      url='https://pinger.pirxcy.xyz/api/remove',
+      json=({'url': url})
+    ) as r:
+      if "http" not in url:
+        print("[PirxcyPinger] Invalid URL")
+      elif "https" not in url:
+        print("[PirxcyPinger] Invalid URL")        
+      elif r.status == 400:
+        print("[PirxcyPinger] URL Not Found!")
+      elif r.status == 200:
+        print(f"[PirxcyPinger] Removed {url}")   
+        
+  while True:
+    async with aiohttp.ClientSession() as session:
+      async with session.request(
+        method='GET', 
+        url='https://pinger.pirxcy.xyz/'
+      ) as r:
+        print(f"[PirxcyPinger] Pinged PirxcyPinger")
+        await asyncio.sleep(300)
+  return        
