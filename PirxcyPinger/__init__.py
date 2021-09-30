@@ -62,7 +62,7 @@ async def post(url):
       json=({'url': url})
     ) as r:
       if url in database:
-        raise InvalidURL('Already Pinging This URL')
+        raise AlreadyPinging('Already Pinging This URL')
       elif "http" not in url:
         raise InvalidURL('Invalid URL Requested')
       elif "https" not in url:
