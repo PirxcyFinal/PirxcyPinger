@@ -24,7 +24,7 @@ loop.close()
 ```
 You Would Get:
 
-``[PirxcyPinger] Invalid URL``
+``PirxcyPinger.InvalidURL: InvalidURL``
 
 You Would Need To Add `https://` or `http://` to your url
 ```python
@@ -38,4 +38,6 @@ async def upload():
 loop = asyncio.get_event_loop()
 loop.run_until_complete(upload())
 loop.close()
+
+
 
