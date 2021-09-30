@@ -63,6 +63,15 @@ async def on_ready():
   except PirxcyPinger.AlreadyPinging: #if url is already submitted
     pass #do something
 
+@bot.command()
+async def upload(ctx, url):
+  try:
+    await PirxcyPinger.post(url)
+  except PirxcyPinger.InvalidURL: #if url is invalid
+    await ctx.reply('send a valid url pls')
+  except PirxcyPinger.AlreadyPinging: #if url is already submitted
+    await ctx.reply('im already pinging this url!') #do something
+
 bot.run('token')
 ```
 You Can Catch Other Errors With `InvalidURL` `AlreadyPinging`
