@@ -51,6 +51,7 @@ you can now catch your pirxcypinger errors
 Catching URL Already Submitted Error with discord.py
 
 ```python
+import PirxcyPinger
 import discord
 from discord.ext import commands
 
