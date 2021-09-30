@@ -21,54 +21,72 @@ License: Apache 2.0
 
 import aiohttp, asyncio
 
-async def post(url):
+base = "https://pirxcypingerfinal.pirxcyfinal.repl.co"
+db_base = "https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzMwNDc4NDUsImlhdCI6MTYzMjkzNjI0NSwiaXNzIjoiY29ubWFuIiwiZGF0YWJhc2VfaWQiOiJhN2JmMjJiZS1lNWQ1LTQ3NzUtYmYwNC1lNDc4YjcwNmMxOWYifQ.L8KGSxEi0cqGeuWq1eLVAdSNJse6P6eEApZWcRZ5Z2VYvhBkj7zN9ywYzRjU-469lhqOI2J2jNq3tj48Fhhuxw"
+
+class PingerException(Exception):
+  pass
+
+class AlreadyPinging(PingerException):
+  pass
+
+class InvalidURL(PingerException):
+  pass
+
+async def check_database():
   async with aiohttp.ClientSession() as session:
     async with session.request(
-      method='POST', 
-      url='https://pinger.pirxcy.xyz/api/add',
-      json=({'url': url})
+      method='GET', 
+      url=f"{db_base}/pings"
     ) as r:
-      if "http" not in url:
-        print("[PirxcyPinger] Invalid URL")
-      elif "https" not in url:
-        print("[PirxcyPinger] Invalid URL")        
-      elif r.status == 500:
-        print("[PirxcyPinger] Ping Response: URL Already Uploaded!")
-      elif r.status == 200:
-        print(f"[PirxcyPinger] Uploaded {url}")        
+      data = await r.text()
+  return str(data)
   
+async def revive_pinger():
   while True:
     async with aiohttp.ClientSession() as session:
       async with session.request(
         method='GET', 
-        url='https://pinger.pirxcy.xyz/'
+        url=base
       ) as r:
         print(f"[PirxcyPinger] Pinged PirxcyPinger")
         await asyncio.sleep(300)
+  return  
+
+async def post(url):
+  database = await check_database()
+  async with aiohttp.ClientSession() as session:
+    async with session.request(
+      method='POST', 
+      url=f'{base}/api/add',
+      json=({'url': url})
+    ) as r:
+      if url in database:
+        raise InvalidURL('Already Pinging This URL')
+      elif "http" not in url:
+        raise InvalidURL('Invalid URL Requested')
+      elif "https" not in url:
+        raise InvalidURL('Invalid URL Requested')
+      else:
+        print(f"[PirxcyPinger] Uploaded {url}") 
+  await revive_pinger()
   return
 
 async def remove(url):
+  database = await check_database()
   async with aiohttp.ClientSession() as session:
     async with session.request(
       method='POST', 
-      url='https://pinger.pirxcy.xyz/api/remove',
+      url=f'{base}/api/remove',
       json=({'url': url})
     ) as r:
-      if "http" not in url:
-        print("[PirxcyPinger] Invalid URL")
+      if url not in database:
+        raise InvalidURL('Unable To Find This URL')
+      elif "http" not in url:
+        raise InvalidURL('Invalid URL')
       elif "https" not in url:
-        print("[PirxcyPinger] Invalid URL")        
-      elif r.status == 400:
-        print("[PirxcyPinger] URL Not Found!")
-      elif r.status == 200:
+        raise InvalidURL('Invalid URL')
+      else:
         print(f"[PirxcyPinger] Removed {url}")   
-        
-  while True:
-    async with aiohttp.ClientSession() as session:
-      async with session.request(
-        method='GET', 
-        url='https://pinger.pirxcy.xyz/'
-      ) as r:
-        print(f"[PirxcyPinger] Pinged PirxcyPinger")
-        await asyncio.sleep(300)
-  return        
+  await revive_pinger()
+  return    
