@@ -19,10 +19,10 @@ Software: PirxcyPinger
 License: Apache 2.0
 """
 
-import aiohttp, asyncio
+import aiohttp, asyncio, requests
 
 base = "https://pirxcypingerfinal.pirxcyfinal.repl.co"
-db_base = "https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzMwNDc4NDUsImlhdCI6MTYzMjkzNjI0NSwiaXNzIjoiY29ubWFuIiwiZGF0YWJhc2VfaWQiOiJhN2JmMjJiZS1lNWQ1LTQ3NzUtYmYwNC1lNDc4YjcwNmMxOWYifQ.L8KGSxEi0cqGeuWq1eLVAdSNJse6P6eEApZWcRZ5Z2VYvhBkj7zN9ywYzRjU-469lhqOI2J2jNq3tj48Fhhuxw"
+db_base = requests.get(f"{base}/db").text
 
 class PingerException(Exception):
   pass
