@@ -89,4 +89,4 @@ async def remove(url):
       else:
         print(f"[PirxcyPinger] Removed {url}")   
   await revive_pinger()
-  return    
+  return
