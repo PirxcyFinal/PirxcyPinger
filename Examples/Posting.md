@@ -15,8 +15,11 @@ import os
 import asyncio
 
 async def upload():
-  await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
-
+  try:
+    await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+  except PirxcyPinger.AlreadyPinging: #if url is already submitted
+    pass #do something
+    
 loop = asyncio.get_event_loop()
 loop.run_until_complete(upload())
 loop.close()
@@ -37,11 +40,14 @@ import os
 import sanic
 
 app = sanic.Sanic("PirxcyPinger")
-url = f"https://{os.environ['REPL_ID']}.id.repl.co"
+url = PirxcyPinger.get_url(platform='replit')
 
 async def upload():
-  await PirxcyPinger.post(url)
-
+  try:
+    await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+  except PirxcyPinger.AlreadyPinging: #if url is already submitted
+    pass #do something
+    
 @app.route('/')
 async def index(request):
   asyncio.get_event_loop().create_task(upload())
@@ -58,12 +64,14 @@ import discord
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='>')
-url = f"https://{os.environ['REPL_ID']}.id.repl.co"
-
+url = PirxcyPinger.get_url(platform='replit')
 
 @bot.event
 async def on_ready():
-  await PirxcyPinger.post(url)
+  try:
+    await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+  except PirxcyPinger.AlreadyPinging: #if url is already submitted
+    pass #do something
 
 @bot.command()
 async def ping(ctx):
