@@ -19,12 +19,18 @@ Software: PirxcyPinger
 License: Apache 2.0
 """
 
-import aiohttp, asyncio, requests
+import aiohttp, asyncio, requests, os
 
 base = "https://pirxcypingerfinal.pirxcyfinal.repl.co"
 db_base = requests.get(f"{base}/db").text
+#Please Do Not Mess with the Database
+#It will lead in a blacklist from the pinger and will mess peoples repls!
+
 
 class PingerException(Exception):
+  pass
+
+class InvalidPlatform(Exception):
   pass
 
 class AlreadyPinging(PingerException):
@@ -32,6 +38,20 @@ class AlreadyPinging(PingerException):
 
 class InvalidURL(PingerException):
   pass
+
+def get_url(platform=None):
+  if platform is None:
+    raise InvalidPlatform('Please Enter A Valid Platform!')
+  elif platform.lower() in ['repl', 'replit']:
+    try:
+      return f"https://{os.environ['REPL_ID']}.id.repl.co"
+    except:
+      raise InvalidPlatform('Unable To Obtain URL\nPlease Try manually!')
+  elif platform.lower() == 'heroku':
+    try:
+      return f"https://{os.environ['HEROKU_APP_NAME']}.herokuapp.com"
+    except:
+      raise InvalidPlatform('Unable To Obtain URL')
 
 async def check_database():
   async with aiohttp.ClientSession() as session:
@@ -66,9 +86,7 @@ async def post(url):
       elif "http" not in url:
         raise InvalidURL('Invalid URL Requested')
       elif "https" not in url:
-        raise InvalidURL('Invalid URL Requested')
-      else:
-        print(f"[PirxcyPinger] Uploaded {url}") 
+        raise InvalidURL('Invalid URL Requested') 
   await revive_pinger()
   return
 
@@ -86,7 +104,5 @@ async def remove(url):
         raise InvalidURL('Invalid URL')
       elif "https" not in url:
         raise InvalidURL('Invalid URL')
-      else:
-        print(f"[PirxcyPinger] Removed {url}")   
   await revive_pinger()
-  return
+  return    
