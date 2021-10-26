@@ -37,7 +37,7 @@ import os
 import sanic
 
 app = sanic.Sanic("PirxcyPinger")
-url = f"https://{os.environ['REPL_ID']}.id.repl.co"
+url = PirxcyPinger.get_url(platform='replit')
 
 async def upload():
   await PirxcyPinger.post(url)
@@ -65,8 +65,7 @@ import discord
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='>')
-url = f"https://{os.environ['REPL_ID']}.id.repl.co"
-
+url = PirxcyPinger.get_url(platform='replit')
 
 @bot.event
 async def on_ready():
