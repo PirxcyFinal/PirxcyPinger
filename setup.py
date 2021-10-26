@@ -5,12 +5,12 @@ with open("README.md", "r") as fh:
     
 setuptools.setup(
     name="PirxcyPinger",
-    version="3.0.2",
+    version="3.1.0",
     author="Pirxcy",
     description="Async Tool For Uploading URL's To PirxcyPinger",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://pinger.pirxcy.xyz",
+    url="https://pirxcypingerfinal.pirxcyfinal.repl.co/",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
