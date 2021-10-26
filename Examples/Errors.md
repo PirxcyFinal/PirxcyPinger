@@ -16,8 +16,11 @@ import os
 import asyncio
 
 async def upload():
-  await PirxcyPinger.post(f"{os.environ['REPL_ID']}.id.repl.co")
-
+  try:
+    await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+  except PirxcyPinger.AlreadyPinging: #if url is already submitted
+    pass #do something
+    
 loop = asyncio.get_event_loop()
 loop.run_until_complete(upload())
 loop.close()
@@ -75,6 +78,6 @@ async def upload(ctx, url):
 
 bot.run('token')
 ```
-You Can Catch Other Errors With `InvalidURL` `AlreadyPinging`
+You Can Catch Other Errors With `InvalidURL` `AlreadyPinging` `InvalidPlatform`
 
 Enjoy <3
