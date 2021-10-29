@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     
 setuptools.setup(
     name="PirxcyPinger",
-    version="3.2.0",
+    version="3.2.1",
     author="Pirxcy",
     description="Async Tool For Uploading URL's To PirxcyPinger",
     long_description=long_description,
