@@ -85,7 +85,8 @@ async def post(url):
         'BASE': url
       },      
       json=({'url': url})
-    ) as r.json():
+    ) as r:
+      response = await r.json()
       if url in database:
         raise AlreadyPinging('Already Pinging This URL')
       elif "http" not in url:
@@ -105,14 +106,15 @@ async def remove(url):
         'BASE': url
       },
       json=({'url': url})
-    ) as r.json():
+    ) as r:
+      response = await r.json()
       if url not in database:
         raise InvalidURL('Unable To Find This URL')
       elif "http" not in url:
         raise InvalidURL('Invalid URL')
       elif "https" not in url:
         raise InvalidURL('Invalid URL')
-      elif r == {'result': 'Invalid Permission'}:
+      elif response == {'result': 'Invalid Permission'}:
         raise InvalidPermission('You Cannot Remove Somone Elses URL!')
 
   await revive_pinger()
