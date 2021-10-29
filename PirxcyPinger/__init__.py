@@ -30,6 +30,9 @@ db_base = requests.get(f"{base}/db").text
 class PingerException(Exception):
   pass
 
+class InvalidPermission(Exception):
+  pass
+
 class InvalidPlatform(Exception):
   pass
 
@@ -69,7 +72,6 @@ async def revive_pinger():
         method='GET', 
         url=base
       ) as r:
-        print(f"[PirxcyPinger] Pinged PirxcyPinger")
         await asyncio.sleep(300)
   return  
 
@@ -79,8 +81,11 @@ async def post(url):
     async with session.request(
       method='POST', 
       url=f'{base}/api/add',
+      headers={
+        'BASE': url
+      },      
       json=({'url': url})
-    ) as r:
+    ) as r.json():
       if url in database:
         raise AlreadyPinging('Already Pinging This URL')
       elif "http" not in url:
@@ -96,13 +101,19 @@ async def remove(url):
     async with session.request(
       method='POST', 
       url=f'{base}/api/remove',
+      headers={
+        'BASE': url
+      },
       json=({'url': url})
-    ) as r:
+    ) as r.json():
       if url not in database:
         raise InvalidURL('Unable To Find This URL')
       elif "http" not in url:
         raise InvalidURL('Invalid URL')
       elif "https" not in url:
         raise InvalidURL('Invalid URL')
+      elif r == {'result': 'Invalid Permission'}:
+        raise InvalidPermission('You Cannot Remove Somone Elses URL!')
+
   await revive_pinger()
   return    
