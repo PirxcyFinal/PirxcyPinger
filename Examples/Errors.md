@@ -78,6 +78,6 @@ async def upload(ctx, url):
 
 bot.run('token')
 ```
-You Can Catch Other Errors With `InvalidURL` `AlreadyPinging` `InvalidPlatform`
+You Can Catch Other Errors With `InvalidURL` `AlreadyPinging` `InvalidPlatform` `InvalidPermission`
 
 Enjoy <3
