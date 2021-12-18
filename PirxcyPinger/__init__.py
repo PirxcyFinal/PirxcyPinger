@@ -19,33 +19,36 @@ Software: PirxcyPinger
 License: Apache 2.0
 """
 
-import aiohttp, asyncio, requests, os
+#system imports:
+import requests
+import os
+
+
+#3rd party imports:
+import aiohttp
+import asyncio
+
+#3rd party from imports:
+
+#exceptions:
+from .exceptions import InvalidPermission 
+from .exceptions import InvalidPlatform
+from .exceptions import AlreadyPinging
+from .exceptions import InvalidURL
+
 
 base = "https://pirxcypingerfinal.pirxcyfinal.repl.co"
 db_base = requests.get(f"{base}/db").text
 #Please Do Not Mess with the Database
 #It will lead in a blacklist from the pinger and will mess peoples repls!
 
-
-class PingerException(Exception):
-  pass
-
-class InvalidPermission(Exception):
-  pass
-
-class InvalidPlatform(Exception):
-  pass
-
-class AlreadyPinging(PingerException):
-  pass
-
-class InvalidURL(PingerException):
-  pass
-
 def get_url(platform=None):
   if platform is None:
     raise InvalidPlatform('Please Enter A Valid Platform!')
-  elif platform.lower() in ['repl', 'replit']:
+  elif platform.lower() in [
+    'repl', 
+    'replit'
+  ]:
     try:
       return f"https://{os.environ['REPL_ID']}.id.repl.co"
     except:
@@ -55,15 +58,6 @@ def get_url(platform=None):
       return f"https://{os.environ['HEROKU_APP_NAME']}.herokuapp.com"
     except:
       raise InvalidPlatform('Unable To Obtain URL')
-
-async def check_database():
-  async with aiohttp.ClientSession() as session:
-    async with session.request(
-      method='GET', 
-      url=f"{db_base}/pings"
-    ) as r:
-      data = await r.text()
-  return str(data)
   
 async def revive_pinger():
   while True:
@@ -72,11 +66,10 @@ async def revive_pinger():
         method='GET', 
         url=base
       ) as r:
-        await asyncio.sleep(300)
+        await asyncio.sleep(600)
   return  
 
 async def post(url):
-  database = await check_database()
   async with aiohttp.ClientSession() as session:
     async with session.request(
       method='POST', 
@@ -84,20 +77,22 @@ async def post(url):
       headers={
         'BASE': url
       },      
-      json=({'url': url})
+      json=(
+        {'url': url}
+      )
     ) as r:
       response = await r.json()
-      if url in database:
+      if response == {"result": "URL Already Stored!"}:
         raise AlreadyPinging('Already Pinging This URL')
       elif "http" not in url:
         raise InvalidURL('Invalid URL Requested')
       elif "https" not in url:
-        raise InvalidURL('Invalid URL Requested') 
-  await revive_pinger()
+        raise InvalidURL('Invalid URL Requested')
+      elif response == {"result": True}:
+        return True
   return
 
 async def remove(url):
-  database = await check_database()
   async with aiohttp.ClientSession() as session:
     async with session.request(
       method='POST', 
@@ -105,10 +100,12 @@ async def remove(url):
       headers={
         'BASE': url
       },
-      json=({'url': url})
+      json=(
+        {'url': url}
+      )
     ) as r:
       response = await r.json()
-      if url not in database:
+      if response == {"result": "URL Not Found!"}:
         raise InvalidURL('Unable To Find This URL')
       elif "http" not in url:
         raise InvalidURL('Invalid URL')
@@ -116,6 +113,6 @@ async def remove(url):
         raise InvalidURL('Invalid URL')
       elif response == {'result': 'Invalid Permission'}:
         raise InvalidPermission('You Cannot Remove Somone Elses URL!')
-
-  await revive_pinger()
+      elif response == {"result": True}:
+        return True
   return    
