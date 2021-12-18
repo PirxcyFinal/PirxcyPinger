@@ -34,26 +34,30 @@ This would output:<br>
 
 Sanic example:
 ```python
-import PirxcyPinger
-import asyncio
-import os
 import sanic
+import PirxcyPinger
 
 app = sanic.Sanic("PirxcyPinger")
-url = PirxcyPinger.get_url(platform='replit')
 
-async def upload():
+async def post():
+  url = PirxcyPinger.get_url(platform='replit')
   try:
-    await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+    await PirxcyPinger.post(url)
+    print(f"Uploaded {url}")
   except PirxcyPinger.AlreadyPinging: #if url is already submitted
-    pass #do something
-    
+    print("URL Already Submitted!") #do something
+  except:#uncaught error
+    pass
+
 @app.route('/')
 async def index(request):
-  asyncio.get_event_loop().create_task(upload())
-  return sanic.response.text("Pinging...")
+  return sanic.response.text("PirxcyPinger Example!")
 
-app.run(host="0.0.0.0", port=80)
+
+app.add_task(post())
+app.run(
+  host="0.0.0.0"
+)
 ```
 
 Discord.py example:
@@ -69,7 +73,7 @@ url = PirxcyPinger.get_url(platform='replit')
 @bot.event
 async def on_ready():
   try:
-    await PirxcyPinger.post(f"https://{os.environ['REPL_ID']}.id.repl.co")
+    await PirxcyPinger.post(url)
   except PirxcyPinger.AlreadyPinging: #if url is already submitted
     pass #do something
 
