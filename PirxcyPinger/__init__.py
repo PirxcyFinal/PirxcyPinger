@@ -1,6 +1,6 @@
 """
 “Commons Clause” License Condition v1.0
-Copyright Pirxcy 2020
+Copyright Pirxcy 2020-2022
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
 Without limiting other conditions in the License, the grant
@@ -37,8 +37,7 @@ from .exceptions import AlreadyPinging
 from .exceptions import InvalidURL
 
 
-base = "https://pirxcypingerfinal.pirxcyfinal.repl.co"
-db_base = requests.get(f"{base}/db").text
+base = "https://pirxcypingerfinal.pirxcy1942.repl.co"
 #Please Do Not Mess with the Database
 #It will lead in a blacklist from the pinger and will mess peoples repls!
 
@@ -58,7 +57,14 @@ def get_url(platform=None):
       return f"https://{os.environ['HEROKU_APP_NAME']}.herokuapp.com"
     except:
       raise InvalidPlatform('Unable To Obtain URL')
-  
+
+def is_online():
+  try:
+    r = requests.get(base)
+  except requests.exceptions.ConnectionError:
+    return False
+  return True
+
 async def revive_pinger():
   while True:
     async with aiohttp.ClientSession() as session:
@@ -69,7 +75,11 @@ async def revive_pinger():
         await asyncio.sleep(600)
   return  
 
-async def post(url):
+async def post(
+  url,
+  external_urls: list=None
+):
+  """Posts URL(s) To PirxcyPinger or Any External Pinger"""
   async with aiohttp.ClientSession() as session:
     async with session.request(
       method='POST', 
@@ -82,6 +92,23 @@ async def post(url):
       )
     ) as r:
       response = await r.json()
+    if external_urls != None:
+      for url in external_urls:
+        try:
+          async with aiohttp.ClientSession() as session:
+            async with session.request(
+              method='POST', 
+              url=f'{url}/api/add',
+              headers={
+                'BASE': url
+              },      
+              json=(
+                {'url': url}
+              )
+            ) as r:
+              response = await r.json()
+        except Exception as e:
+          raise(e)
       if response == {"result": "URL Already Stored!"}:
         raise AlreadyPinging('Already Pinging This URL')
       elif "http" not in url:
@@ -92,7 +119,11 @@ async def post(url):
         return True
   return
 
-async def remove(url):
+async def remove(
+  url,
+  external_urls: list=None
+):
+  """Removes URL(s) To PirxcyPinger or Any External Pinger"""
   async with aiohttp.ClientSession() as session:
     async with session.request(
       method='POST', 
@@ -105,6 +136,23 @@ async def remove(url):
       )
     ) as r:
       response = await r.json()
+    if external_urls != None:
+      for url in external_urls:
+        try:
+          async with aiohttp.ClientSession() as session:
+            async with session.request(
+              method='POST',
+              url=f'{base}/api/remove',
+              headers={
+                'BASE': url
+              },
+              json=(
+                {'url': url}
+              )
+            ) as r:
+              response = await r.json()
+        except Exception as e:
+          raise(e)
       if response == {"result": "URL Not Found!"}:
         raise InvalidURL('Unable To Find This URL')
       elif "http" not in url:
