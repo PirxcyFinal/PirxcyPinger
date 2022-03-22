@@ -83,3 +83,27 @@ async def ping(ctx):
 
 bot.run('token')
 ```
+
+External Pinger example:
+```python
+import PirxcyPinger
+import os
+import asyncio
+
+async def upload():
+  try:
+    await PirxcyPinger.post(
+      url=f"https://{os.environ['REPL_ID']}.id.repl.co",
+      external_urls=[
+        "https://publicpinger--gomashio1596.repl.co/",
+        "https://publicpinger.gomanshiopirxcy.repl.co/"
+      ]
+    )
+  except PirxcyPinger.AlreadyPinging: #if url is already submitted
+    pass #do something
+    
+loop = asyncio.get_event_loop()
+loop.run_until_complete(upload())
+loop.close()
+```
+Please Note This Feature is experimental i have no idea to comfirm this full works
